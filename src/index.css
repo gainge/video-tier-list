@@ -1,0 +1,609 @@
+:root {
+  --bg: #17181c;
+  --panel: #22242b;
+  --border: #34363f;
+  --text: #e8e9ed;
+  --muted: #9498a4;
+  --tile: 108px;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font:
+    14px/1.5 system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+}
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.app-header h1 {
+  font-size: 20px;
+  margin: 0 0 16px;
+}
+
+.board {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.tier-row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border);
+  min-height: calc(var(--tile) + 16px);
+}
+
+.tier-row:last-child {
+  border-bottom: none;
+}
+
+.tier-label {
+  flex: 0 0 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #17181c;
+  text-align: center;
+  word-break: break-word;
+  padding: 4px;
+}
+
+.tier-items,
+.pool-items {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px;
+  background: var(--panel);
+  align-content: flex-start;
+}
+
+.pool {
+  margin-top: 20px;
+}
+
+.pool h2 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 8px;
+}
+
+.pool-items {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  min-height: calc(var(--tile) + 16px);
+}
+
+@media (max-width: 640px) {
+  :root {
+    --tile: 84px;
+  }
+
+  .tier-label {
+    flex-basis: 56px;
+    font-size: 18px;
+  }
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.app-header h1 {
+  margin-bottom: 0;
+}
+
+.button {
+  font: inherit;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.button:hover {
+  border-color: var(--muted);
+}
+
+.button-primary {
+  background: #3b6ef5;
+  border-color: #3b6ef5;
+  color: #f7f8fc;
+}
+
+.button-primary:hover {
+  background: #4f7ef7;
+  border-color: #4f7ef7;
+}
+
+.tile-slot {
+  position: relative;
+  width: var(--tile);
+}
+
+.tile-remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.tile-slot:hover .tile-remove,
+.tile-remove:focus-visible {
+  opacity: 1;
+}
+
+.video-tile {
+  position: relative;
+  width: var(--tile);
+  height: var(--tile);
+  border-radius: 4px;
+  overflow: hidden;
+  background: #0f1013;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+}
+
+.video-tile:focus-visible {
+  outline: 2px solid #3b6ef5;
+  outline-offset: 2px;
+}
+
+.video-tile-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+.video-tile-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 4px 5px;
+  font-size: 10px;
+  line-height: 1.25;
+  color: #f2f3f7;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.88), rgba(0, 0, 0, 0));
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 10;
+}
+
+.dialog {
+  width: min(520px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.dialog h2 {
+  font-size: 16px;
+  margin: 0 0 4px;
+}
+
+.dialog-hint {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
+
+.dialog-textarea {
+  width: 100%;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  resize: vertical;
+}
+
+.dialog-result {
+  margin-top: 12px;
+  color: var(--muted);
+}
+
+.dialog-result p {
+  margin: 0;
+}
+
+.dialog-invalid {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  overflow-wrap: anywhere;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tier-row.is-over .tier-items,
+.pool-items.is-over {
+  background: #2c2f38;
+  box-shadow: inset 0 0 0 2px #3b6ef5;
+}
+
+.tile-slot.is-dragging {
+  opacity: 0.35;
+}
+
+.drag-overlay {
+  cursor: grabbing;
+  transform: scale(1.05);
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.55));
+}
+
+.video-tile {
+  /* The TouchSensor's 200ms delay already separates a drag from a tap or a scroll, so
+     the tile only needs the double-tap-zoom delay gone — blocking pan would strand a
+     swipe that starts on a tile, and the pool is wall-to-wall tiles. */
+  touch-action: manipulation;
+}
+
+.player-backdrop {
+  z-index: 20;
+  padding: 12px;
+}
+
+.player-dialog {
+  width: min(900px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.player-dialog:focus-visible {
+  outline: none;
+}
+
+.player-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.player-title {
+  flex: 1;
+  font-size: 15px;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.player-close {
+  flex: none;
+  font-size: 16px;
+  line-height: 1;
+  padding: 4px 10px;
+}
+
+.player-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.player-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.player-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.player-watch-link {
+  color: #8fb0ff;
+}
+
+.player-ranks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.player-rank {
+  font: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.player-rank:hover {
+  border-color: var(--muted);
+}
+
+.player-rank.is-current {
+  background: #3b6ef5;
+  border-color: #3b6ef5;
+  color: #f7f8fc;
+}
+
+.player-rank-key {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.player-rank.is-current .player-rank-key {
+  color: #dbe4ff;
+}
+
+.player-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .player-backdrop {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .player-dialog {
+    width: 100%;
+    border: none;
+    border-radius: 0;
+  }
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.button:disabled:hover {
+  border-color: var(--border);
+}
+
+.button-danger {
+  background: #b8323c;
+  border-color: #b8323c;
+  color: #fdf2f3;
+}
+
+.button-danger:hover {
+  background: #c9414b;
+  border-color: #c9414b;
+}
+
+.share-bar {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Pushes the reset controls to the far edge so they are not neighbours of the copy buttons. */
+.share-status {
+  flex: 1;
+  margin: 0;
+  min-width: 0;
+  color: #7fd18b;
+}
+
+.share-confirm-prompt {
+  color: var(--text);
+}
+
+.share-hint,
+.share-warning {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.share-warning {
+  color: #ffc978;
+}
+
+.share-manual {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.share-manual label {
+  color: var(--muted);
+}
+
+.share-manual-input {
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  width: 100%;
+}
+
+.tier-label {
+  position: relative;
+}
+
+.tier-label-text,
+.tier-label-input {
+  font: inherit;
+  width: 100%;
+  color: inherit;
+  text-align: center;
+  background: none;
+  border: none;
+  padding: 0;
+  overflow-wrap: anywhere;
+}
+
+.tier-label-text {
+  cursor: text;
+}
+
+.tier-label-input {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
+  padding: 2px;
+}
+
+.tier-controls {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  align-content: center;
+  gap: 2px;
+  padding: 4px;
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  /* Faded rather than removed: the controls stay tabbable and tappable while a board that
+     is only being ranked shows nothing but its tiles. */
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.tier-row:hover .tier-controls,
+.tier-controls:focus-within {
+  opacity: 1;
+}
+
+/* Without a pointer there is no hover to reveal them, so they stay visible. */
+@media (hover: none) {
+  .tier-controls {
+    opacity: 1;
+  }
+}
+
+.tier-control {
+  font: inherit;
+  line-height: 1;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.tier-control:hover:enabled {
+  border-color: var(--muted);
+}
+
+.tier-control:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.board-limit {
+  margin: 0;
+  padding: 6px 8px;
+  color: var(--muted);
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+}
+
+.share-error {
+  margin: 8px 0 0;
+  color: #ff9b9b;
+}
+
+/* Applied only while the board is being rasterized, where the tiles' line clamp is ignored
+   and a wrapped caption spills past the tile. One elided line always fits. */
+.board.is-exporting .video-tile-caption {
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
