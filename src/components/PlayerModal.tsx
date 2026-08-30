@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useVideoTitle } from '../lib/oembed'
 import { useModal } from '../lib/useModal'
 import { embedUrl, watchUrl } from '../lib/youtube'
-import { boardOrder, findBucket } from '../state/boardReducer'
+import { findBucket } from '../state/boardReducer'
+import { countUnranked, createPlayQueue, stepQueue } from '../state/playQueue'
 import type { MoveTarget } from '../state/boardReducer'
 import type { BoardState, VideoId } from '../types'
 
@@ -42,18 +43,25 @@ export function PlayerModal({ board, videoId, onClose, onNavigate, onPlace }: Pl
   const placementLabel =
     placement?.kind === 'tier' ? `Tier ${board.tiers[placement.index]?.label ?? ''}` : 'Unranked'
 
-  const order = useMemo(() => boardOrder(board), [board])
+  // Frozen at open: placing a video from here moves it out of the pool, and an order read
+  // from the live board would then send "next" into the tier it just landed in.
+  const [queue] = useState(() => createPlayQueue(board, videoId))
+  const remaining = useMemo(() => countUnranked(queue, board), [queue, board])
 
-  // Wrapping rather than stopping at the ends: a queue you can keep cycling beats a dead key.
   const step = useCallback(
     (delta: number) => {
-      if (order.length < 2) return
-      const at = order.indexOf(videoId)
-      if (at === -1) return
-      onNavigate(order[(at + delta + order.length) % order.length])
+      const next = stepQueue(queue, board, videoId, delta)
+      if (next !== null) onNavigate(next)
     },
-    [order, videoId, onNavigate],
+    [queue, board, videoId, onNavigate],
   )
+
+  const position = queue.ids.indexOf(videoId) + 1
+  const navStatus = queue.fromPool
+    ? remaining > 0
+      ? `${remaining} still unranked`
+      : 'All ranked'
+    : `${position} of ${queue.ids.length}`
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -167,6 +175,7 @@ export function PlayerModal({ board, videoId, onClose, onNavigate, onPlace }: Pl
           <button type="button" className="button" onClick={() => step(-1)}>
             ← Previous
           </button>
+          <span className="player-nav-status">{navStatus}</span>
           <button type="button" className="button" onClick={() => step(1)}>
             Next →
           </button>

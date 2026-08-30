@@ -23,6 +23,15 @@ YouTube's CORS-enabled oEmbed endpoint, both without an API key. Titles are neve
 into the URL because they would dominate its length; a video whose title can't be fetched
 falls back to showing its id.
 
+**The player's queue is frozen when it opens.** Ranking a video from inside the player
+moves it out of the pool, so navigation driven by the live board would reshuffle underneath
+you: "next" from a video you just placed would follow it into its new tier — material you
+have already worked through — instead of continuing to the next unranked video. The queue is
+snapshotted at open, and where you entered from decides what is in it: from the pool you get
+the unranked queue, from a tier you get the whole board to browse. Going forward through an
+unranked queue skips what has since been placed; going back never skips, because returning to
+the video you just placed is how you change your mind about it. See `src/state/playQueue.ts`.
+
 **One list owns each id.** `BoardState` keeps every video in exactly one bucket — a tier's
 `items` or the pool. Membership *is* the placement, so there is no parallel index to drift
 out of sync.

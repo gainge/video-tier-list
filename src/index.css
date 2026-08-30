@@ -415,8 +415,15 @@ body {
 
 .player-nav {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 8px;
+}
+
+.player-nav-status {
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
 }
 
 @media (max-width: 640px) {
